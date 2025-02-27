@@ -10,7 +10,7 @@ else
 fi
 
 # Define LaunchAgent plist path
-LAUNCH_AGENT_PATH="$HOME/Library/LaunchAgents/com.user.trackpadserver.plist"
+LAUNCH_AGENT_PATH="$HOME/Library/LaunchAgents/com.tuliotroncoso.deviceswitcherserver.plist"
 SERVER_SCRIPT_PATH="$(dirname "$0")/device_switch_server.py"  # Automatically use script directory
 
 # Load environment variables from .env file if it exists
@@ -31,7 +31,7 @@ cat <<EOF > "$LAUNCH_AGENT_PATH"
 <plist version="1.0">
     <dict>
         <key>Label</key>
-        <string>com.user.trackpadserver</string>
+        <string>com.tuliotroncoso.deviceswitcherserver</string>
         <key>ProgramArguments</key>
         <array>
             <string>/usr/bin/python3</string>
