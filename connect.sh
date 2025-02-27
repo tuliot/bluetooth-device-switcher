@@ -7,7 +7,7 @@ fi
 
 # Verify if devices are connected
 device_connected() {
-    blueutil --paired | grep -i "$1" &>/dev/null
+    blueutil --connected | grep -i "$1" &>/dev/null
     return $?
 }
 
@@ -29,17 +29,23 @@ curl -X GET "http://$OTHER_MAC_IP:$PORT/unpair" &>/dev/null
 connect_if_not_connected() {
     if ! device_connected "$1"; then
         echo "Connecting $2..."
-        blueutil --connect "$1"
+        blueutil --connect "$1" &>/dev/null
 
         sleep 1
 
         if device_connected "$1"; then
             echo "✅ $2 successfully connected!"
         else
-            echo "❌ Failed to connect Keyboard. Check if it's turned on and in range."
+            if [ "${3:-0}" -ge 3 ]; then
+                echo "❌ Failed to connect $2 after 3 attempts. Check if it's turned on and in range."
+                exit 1
+            fi
+            echo "❌ Failed to connect $2. Retrying..."
+            connect_if_not_connected "$1" "$2" $(( ${3:-0} + 1 ))
         fi
     else
-        echo "$1 is already connected."
+        [ "${3:-0}" -gt 0 ] && echo "✅ $2 successfully connected!"
+        echo "$2 is already connected."
     fi
 }
 
