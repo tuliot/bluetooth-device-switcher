@@ -11,7 +11,8 @@ fi
 
 # Define LaunchAgent plist path
 LAUNCH_AGENT_PATH="$HOME/Library/LaunchAgents/com.tuliotroncoso.deviceswitcherserver.plist"
-SERVER_SCRIPT_PATH="$(dirname "$0")/device_switch_server.py"  # Automatically use script directory
+SERVER_SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/device_switch_server.py"
+BLUEUTIL_PATH="$(command -v blueutil)" 
 
 # Load environment variables from .env file if it exists
 if [ -f .env ]; then
@@ -36,11 +37,27 @@ cat <<EOF > "$LAUNCH_AGENT_PATH"
         <array>
             <string>/usr/bin/python3</string>
             <string>$SERVER_SCRIPT_PATH</string>
-            <string>$KEYBOARD_MAC</string>
-            <string>$TRACKPAD_MAC</string>
-            <string>$OTHER_MAC_IP</string>
-            <string>$PORT</string>
         </array>
+
+        <key>EnvironmentVariables</key>
+        <dict>
+            <key>BLUEUTIL_PATH</key>
+            <string>$BLUEUTIL_PATH</string>
+            <key>KEYBOARD_MAC</key>
+            <string>$KEYBOARD_MAC</string>
+            <key>TRACKPAD_MAC</key>
+            <string>$TRACKPAD_MAC</string>
+            <key>OTHER_MAC_IP</key>
+            <string>$OTHER_MAC_IP</string>
+            <key>PORT</key>
+            <string>$PORT</string>
+        </dict>
+
+        <key>StandardOutPath</key>
+            <string>/tmp/deviceswitcherserver.log</string>
+        <key>StandardErrorPath</key>
+            <string>/tmp/deviceswitcherserver.err</string>
+
         <key>RunAtLoad</key>
         <true/>
         <key>KeepAlive</key>
@@ -52,5 +69,6 @@ EOF
 echo "LaunchAgent plist created at $LAUNCH_AGENT_PATH with environment variables."
 
 # Load LaunchAgent
+launchctl unload "$LAUNCH_AGENT_PATH"
 launchctl load "$LAUNCH_AGENT_PATH"
 echo "Trackpad server started successfully."
