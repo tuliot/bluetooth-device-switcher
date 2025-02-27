@@ -1,8 +1,10 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import subprocess
+import os
 
-KEYBOARD_MAC = ""
-TRACKPAD_MAC = ""
+KEYBOARD_MAC = os.getenv("KEYBOARD_MAC")
+TRACKPAD_MAC = os.getenv("TRACKPAD_MAC")
+PORT = os.getenv("PORT")
 
 class RequestHandler(BaseHTTPRequestHandler):
   def do_GET(self):
@@ -17,7 +19,7 @@ class RequestHandler(BaseHTTPRequestHandler):
           self.send_response(404, "Not Found")
           self.end_headers()
 
-def run(server_class=HTTPServer, handler_class=RequestHandler, port=36487):
+def run(server_class=HTTPServer, handler_class=RequestHandler, port=PORT):
     server_address = ("0.0.0.0", port)
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()

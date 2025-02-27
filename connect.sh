@@ -1,11 +1,15 @@
 #!/bin/bash
 
-KEYBOARD_MAC=""
-TRACKPAD_MAC=""
-OTHER_MAC_IP=""
+# Load environment variables from .env file
+if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
 
-# Port Number for the Custom HTTP Server on the Other Mac
-PORT=""
+# Check if required environment variables are set
+if [ -z "$KEYBOARD_MAC" ] || [ -z "$TRACKPAD_MAC" ] || [ -z "$OTHER_MAC_IP" ] || [ -z "$PORT" ]; then
+    echo "Missing required environment variables. Please define KEYBOARD_MAC, TRACKPAD_MAC, OTHER_MAC_IP, and PORT in a .env file."
+    exit 1
+fi
 
 # Tell the other Mac to unpair the trackpad
 echo "Requesting the other Mac to release the trackpad..."
