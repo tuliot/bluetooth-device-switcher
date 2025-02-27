@@ -1,8 +1,5 @@
 #!/bin/bash
-# personal mbp 192.168.4.152
-# work mbp 192.168.6.191
 
-# Trackpad's MAC Address
 KEYBOARD_MAC=""
 TRACKPAD_MAC=""
 OTHER_MAC_IP=""
